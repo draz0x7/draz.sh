@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on draz.sh</title>
+    <link>https://draz.sh/posts/</link>
+    <description>Recent content in Posts on draz.sh</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 May 2025 19:00:31 -0400</lastBuildDate>
+    <atom:link href="https://draz.sh/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pwning My Childhood Router</title>
+      <link>https://draz.sh/posts/pwning-childhood-router/</link>
+      <pubDate>Sun, 04 May 2025 19:00:31 -0400</pubDate>
+      <guid>https://draz.sh/posts/pwning-childhood-router/</guid>
+      <description>&lt;h1 id=&#34;intro&#34;&gt;Intro&lt;/h1&gt;&#xA;&lt;p&gt;I competed in &lt;a href=&#34;https://www.districtcon.org/2025/junkyard&#34; target=&#34;_blank&#34;&gt;The Junkyard&lt;/a&gt; at DistrictCon Year 0, an end-of-life pwnathon where my group and I presented eight 0-days on the &lt;a href=&#34;https://www.netgear.com/support/product/wnr854t/&#34; target=&#34;_blank&#34;&gt;Netgear WNR854T&lt;/a&gt;. Funny enough, that was the same router my family used growing up. In this post, I&amp;rsquo;ll walk through two memory corruption bugs we found in its UPnP service, how we discovered them, and how we got code execution.&lt;/p&gt;&#xA;&lt;h1 id=&#34;overflow-via-host-header-cve-2024-54802&#34;&gt;Overflow via &lt;code&gt;HOST&lt;/code&gt; Header (&lt;a href=&#34;https://www.cve.org/CVERecord?id=CVE-2024-54802&#34; target=&#34;_blank&#34;&gt;CVE-2024-54802&lt;/a&gt;)&lt;/h1&gt;&#xA;&lt;p&gt;This bug is a classic stack-based buffer overflow triggered by an excessively long &lt;code&gt;HOST&lt;/code&gt; header in an M-SEARCH request. The vulnerable function uses &lt;code&gt;strcpy&lt;/code&gt; at offset &lt;code&gt;0x22bc4&lt;/code&gt; to copy the header into a stack buffer without bounds checking:&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
