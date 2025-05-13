@@ -1,0 +1,4 @@
+baseURL = 'https://draz.sh'
+languageCode = 'en-us'
+title = 'draz.sh'
+theme = 'poison'
