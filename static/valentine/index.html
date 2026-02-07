@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Will you be my Valentine? 💘</title>
+
+<style>
+:root{
+  --bg1:#ffe2f0;
+  --bg2:#ffb5d8;
+  --bg3:#ff6fb1;
+  --cardTop:#fff3f9;
+  --cardBot:#ffd2e7;
+  --ink:#4a0033;
+  --yes1:#ff5fa2;
+  --yes2:#ff87c1;
+  --noBg:#ffe0ef;
+  --noInk:#8a004f;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: radial-gradient(circle at top,var(--bg1),var(--bg2),var(--bg3));
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color:var(--ink);
+  overflow:hidden;
+}
+
+#sakura{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+.card{
+  width:min(760px,92vw);
+  padding:3rem;
+  border-radius:36px;
+  background: linear-gradient(180deg,var(--cardTop),var(--cardBot));
+  box-shadow:
+    0 25px 60px rgba(255,80,160,.45),
+    inset 0 0 0 1px rgba(255,255,255,.65);
+  text-align:center;
+  z-index:1;
+}
+
+h1{ margin:0 0 .6rem; font-size:2.1rem; }
+p{ font-size:1.15rem; margin:0 0 1.8rem; opacity:.92; }
+
+.btnRow{
+  display:flex;
+  gap:.8rem;
+  justify-content:center;
+  position:relative;
+  min-height:64px;
+}
+
+button{
+  border:0;
+  border-radius:999px;
+  padding:1rem 1.9rem;
+  font-size:1.1rem;
+  cursor:pointer;
+  white-space: nowrap;
+}
+
+#yesBtn{
+  background:linear-gradient(135deg,var(--yes1),var(--yes2));
+  color:white;
+  box-shadow:0 10px 25px rgba(255,95,162,.45);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+#yesBtn:hover{
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:0 14px 32px rgba(255,95,162,.6);
+}
+
+#noBtn{
+  background:var(--noBg);
+  color:var(--noInk);
+  box-shadow:0 6px 16px rgba(0,0,0,.15);
+  position:relative;
+}
+
+#yesBtn, #noBtn{
+  min-width: 150px;      /* tweak if you want bigger/smaller */
+}
+
+#msg{
+  margin-top:1.6rem;
+  font-size:1.25rem;
+  font-weight:700;
+}
+
+/* ===== Envelope ===== */
+.envelopeWrap{
+  margin:2rem auto 0;
+  width:min(480px,94%);
+  display:none;
+  opacity:0;
+  transform: translateY(10px) scale(.98);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.envelopeWrap.show{ display:block; }
+.envelopeWrap.visible{ opacity:1; transform:none; }
+
+.clickMe{
+  font-size:1rem;
+  margin-bottom:.6rem;
+  color:#7a0048;
+  font-weight:700;
+  letter-spacing:.2px;
+  animation:pulse 1.6s ease-in-out infinite;
+
+  /* reserve space so opening doesn't shift layout */
+  min-height: 1.4em;
+}
+.clickMe.hidden{
+  opacity:0;
+  animation:none;
+  transform:none;
+  transition: opacity .25s ease;
+}
+
+@keyframes pulse{
+  0%,100%{ transform:scale(1); opacity:.95; }
+  50%{ transform:scale(1.07); opacity:1; }
+}
+
+.envelope{
+  width:100%;
+  height:260px;
+  position:relative;
+  border-radius:24px;
+
+  /* prettier closed envelope */
+  background: linear-gradient(180deg,#ffe8f3 0%, #ffbddb 55%, #ff9fcd 100%);
+  box-shadow:
+    0 22px 55px rgba(255,95,162,.22),
+    inset 0 0 0 1px rgba(255,255,255,.55),
+    inset 0 -18px 40px rgba(255,120,185,.18);
+
+  overflow:hidden;
+  cursor:pointer;
+  perspective:1100px;
+  user-select:none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .15s ease;
+}
+.envelope:hover{ transform: translateY(-2px); }
+
+/* glossy highlight - centered and balanced */
+.envelope::before{
+  content:"";
+  position:absolute;
+  top:-20%;
+  left:50%;
+  transform: translateX(-50%);
+  width:80%;
+  height:70%;
+  background: radial-gradient(ellipse at center,
+    rgba(255,255,255,.6),
+    rgba(255,255,255,.15) 50%,
+    rgba(255,255,255,0) 70%);
+  opacity:.7;
+  pointer-events:none;
+  z-index:2;
+}
+
+.env-back{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg,#fff3fa 0%, #ffd0e7 100%);
+  z-index:1;
+}
+
+/* letter hidden until open */
+.letter{
+  position:absolute;
+  left:50%;
+  bottom:18px;
+  width:88%;
+  height:78%;
+  transform:translateX(-50%) translateY(130%);
+  opacity:0;
+  transition:transform .8s cubic-bezier(.18,.9,.2,1), opacity .35s ease;
+  z-index:2;
+
+  background: linear-gradient(180deg,#fff,#fff6fb);
+  border-radius:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+  padding:1.25rem 1.2rem;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:.6rem;
+}
+.letter h2{ margin:0; font-size:1.25rem; color:#7a0048; }
+.letter p{ margin:0; font-size:1.03rem; color:#5a0037; line-height:1.35; opacity:1; }
+
+/* Hearts decoration on letter */
+.letter::after{
+  content:"💕";
+  position:absolute;
+  right:1.2rem;
+  bottom:0.8rem;
+  font-size:1.1rem;
+  opacity:.3;
+  z-index:0;
+}
+
+/* Signature positioning */
+.letter .signature{
+  position:absolute;
+  right:2.8rem;
+  bottom:0.9rem;
+  font-size:0.85rem;
+  font-style:italic;
+  opacity:0.8;
+  z-index:1;
+  margin:0;
+}
+
+.env-pocket{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:68%;
+  background: linear-gradient(180deg,#ffb9dc 0%, #ff7fbe 100%);
+  clip-path: polygon(0 28%, 50% 68%, 100% 28%, 100% 100%, 0 100%);
+  z-index:4;
+
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.35),
+    inset 0 -10px 25px rgba(0,0,0,.06);
+}
+
+.env-flap{
+  position:absolute;
+  top:0; left:0; right:0;
+  height:62%;
+  background: linear-gradient(180deg,#fff0f8 0%, #ffd4e8 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 72%);
+  transform-origin:50% 0%;
+  transition:transform .75s cubic-bezier(.2,.85,.2,1);
+  z-index:5;
+  backface-visibility:hidden;
+
+  box-shadow:
+    inset 0 -2px 0 rgba(255,255,255,.75),
+    0 10px 20px rgba(0,0,0,.08);
+}
+
+/* Add a subtle fold line to make flap more visible */
+.env-flap::after{
+  content:"";
+  position:absolute;
+  left:0; right:0;
+  bottom:0;
+  height:20px;
+  background: linear-gradient(to bottom, transparent, rgba(200,80,130,.15) 50%, transparent);
+  opacity:.7;
+}
+
+.seal{
+  position:absolute;
+  left:50%;
+  top:calc(62% * 0.72);
+  transform:translate(-50%,-50%);
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  background: radial-gradient(circle at 30% 30%, #ff9bd1, #ff4fa3);
+  box-shadow:
+    0 14px 26px rgba(255,95,162,.35),
+    inset 0 2px 6px rgba(255,255,255,.5),
+    inset 0 -3px 8px rgba(140,20,70,.3);
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:1.5rem;
+  z-index:6;
+  transition: transform .3s ease, opacity .3s ease;
+  text-shadow: 0 2px 4px rgba(0,0,0,.2);
+}
+
+/* open */
+.envelope.open .env-flap{ transform: rotateX(165deg); }
+.envelope.open .seal{
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.85);
+}
+.envelope.open .letter{
+  transform:translateX(-50%) translateY(-6%);
+  opacity:1;
+  z-index:7;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="sakura"></canvas>
+
+<div class="card" id="card">
+  <h1>Mariko... Will you be my Valentine? 🥺💘</h1>
+  <p>I’d love nothing more than to spend Valentine’s Day with you...</p>
+
+  <div class="btnRow">
+    <button id="yesBtn">Yes 🥰</button>
+    <button id="noBtn">No 🙃</button>
+  </div>
+
+  <div id="msg"></div>
+
+  <div class="envelopeWrap" id="envelopeWrap">
+    <div class="clickMe" id="clickMe">👇 click me! 💌</div>
+
+    <div class="envelope" id="envelope" role="button" aria-label="Open love letter">
+      <div class="env-back"></div>
+
+      <div class="letter">
+        <h2>To my dearest Mariko...🌸</h2>
+        <p>Every moment with you feels precious, I'm so lucky I get to love you. Thank you for being in my life.</p>
+        <p><b>Happy Valentine's Day, まりこ 💖</b><br>大好き 😚🫶</p>
+        <p class="signature">Ton chéri, Danyaal (ダニエル)</p>
+      </div>
+
+      <div class="env-pocket"></div>
+      <div class="env-flap"></div>
+      <div class="seal">💖</div>
+    </div>
+  </div>
+</div>
+
+<audio id="song">
+  <source src="cest_lamour.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* dodge no (cycle messages ON the button + avoid YES button area) */
+const noLines = [
+  "No? 😳",
+  "Try again 😼",
+  "Wrong button 💞",
+  "Say yes 🥺",
+  "PLS 🥹",
+  "Nice try 😌",
+  "Be fr 🤨",
+  "Hehe nope 🤭",
+  "Mariko!! 😡"
+];
+
+let noIdx = 0;
+let dodging = false;
+
+function rectsOverlap(a, b){
+  return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+}
+
+function dodge(){
+  if (dodging || yesBtn.disabled) return;
+  dodging = true;
+
+  // 1) cycle the text ON the No button
+  noBtn.textContent = noLines[noIdx % noLines.length];
+  noIdx++;
+
+  // 2) calculate bounds in viewport space
+  const cardRect = card.getBoundingClientRect();
+  const yesRect  = yesBtn.getBoundingClientRect();
+
+  // 3) make a "do-not-place" zone around Yes (buffer so it never blocks)
+  const bufferX = 22;
+  const bufferY = 16;
+  const yesZone = {
+    left: yesRect.left - bufferX,
+    right: yesRect.right + bufferX,
+    top: yesRect.top - bufferY,
+    bottom: yesRect.bottom + bufferY
+  };
+
+  // 4) pick random spots INSIDE the card, but reject if it overlaps Yes zone
+  noBtn.style.position = 'absolute';
+
+  const pad = 14; // keep it away from card edges
+  const maxX = Math.max(pad, cardRect.width  - noBtn.offsetWidth  - pad);
+  const maxY = Math.max(pad, cardRect.height - noBtn.offsetHeight - pad);
+
+  let placed = false;
+
+  for (let i = 0; i < 50; i++){
+    const x = pad + Math.random() * (maxX - pad);
+    const y = pad + Math.random() * (maxY - pad);
+
+    // proposed rect in viewport coords
+    const proposed = {
+      left: cardRect.left + x,
+      right: cardRect.left + x + noBtn.offsetWidth,
+      top: cardRect.top + y,
+      bottom: cardRect.top + y + noBtn.offsetHeight
+    };
+
+    if (!rectsOverlap(proposed, yesZone)){
+      noBtn.style.left = x + 'px';
+      noBtn.style.top  = y + 'px';
+      placed = true;
+      break;
+    }
+  }
+
+  // fallback if somehow we couldn't place it (rare)
+  if (!placed){
+    noBtn.style.left = (cardRect.width - noBtn.offsetWidth - pad) + 'px';
+    noBtn.style.top  = pad + 'px';
+  }
+
+  setTimeout(() => { dodging = false; }, 90);
+}
+
+noBtn.addEventListener('mouseover', dodge);
+noBtn.addEventListener('touchstart', e => { e.preventDefault(); dodge(); });
+noBtn.addEventListener('click', e => { e.preventDefault(); dodge(); }); // just in case
+
+/* yes */
+yesBtn.addEventListener('click', async () => {
+  msg.innerHTML = `
+    YAY!! 💖 I can't wait 🥹💞<br>
+    <span style="font-size:0.95rem; font-weight:500; opacity:0.8;">
+      Expect something soon… 😉🎁💐
+    </span>
+  `;
+
+  noBtn.style.display = 'none';
+  yesBtn.disabled = true;
+
+  envelopeWrap.classList.add('show');
+  requestAnimationFrame(() => envelopeWrap.classList.add('visible'));
+
+  try { await song.play(); } catch(e) {}
+});
+
+/* open envelope on click (no layout jump) */
+let opened = false;
+envelope.addEventListener('click', () => {
+  if (opened) return;
+  opened = true;
+  envelope.classList.add('open');
+  clickMe.classList.add('hidden'); // fade out but keep height
+});
+
+/* sakura */
+const canvas = document.getElementById('sakura');
+const ctx = canvas.getContext('2d');
+
+function resize(){
+  canvas.width = innerWidth * devicePixelRatio;
+  canvas.height = innerHeight * devicePixelRatio;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+}
+addEventListener('resize', resize);
+resize();
+
+const petals = [...Array(40)].map(() => ({
+  x: Math.random() * innerWidth,
+  y: Math.random() * innerHeight,
+  size: 14 + Math.random() * 10,
+  vx: -0.5 + Math.random(),
+  vy: 1 + Math.random() * 1.5,
+  a: 0.4 + Math.random() * 0.35,
+  rotation: Math.random() * 360,
+  rotationSpeed: -2 + Math.random() * 4
+}));
+
+function draw(){
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  for(const p of petals){
+    p.x += p.vx;
+    p.y += p.vy;
+    p.rotation += p.rotationSpeed;
+    
+    if(p.y > innerHeight) {
+      p.y = -30;
+      p.x = Math.random() * innerWidth;
+    }
+    if(p.x > innerWidth) p.x = -30;
+    if(p.x < -30) p.x = innerWidth;
+
+    ctx.save();
+    ctx.globalAlpha = p.a;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotation * Math.PI / 180);
+    ctx.font = `${p.size}px serif`;
+    ctx.fillText('🌸', -p.size/2, p.size/2);
+    ctx.restore();
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+
+</body>
+</html>
